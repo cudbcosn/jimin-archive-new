@@ -28,6 +28,10 @@ body {
     "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -134,6 +138,7 @@ h1 {
 .list-info {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 15px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--line);
@@ -148,6 +153,7 @@ h1 {
 }
 
 .video-card {
+  min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 4px;
@@ -250,6 +256,7 @@ h1 {
 .card-footer {
   display: flex;
   justify-content: space-between;
+  gap: 8px;
   margin-top: 13px;
   padding-top: 10px;
   border-top: 1px solid #EEEAE4;
@@ -307,6 +314,7 @@ footer strong {
   letter-spacing: 2px;
 }
 
+/* 播放窗口 */
 .modal {
   position: fixed;
   z-index: 99;
@@ -316,6 +324,7 @@ footer strong {
   justify-content: center;
   padding: 16px;
   background: rgba(35, 31, 27, 0.86);
+  overflow-y: auto;
 }
 
 .modal.open {
@@ -325,17 +334,22 @@ footer strong {
 .modal-box {
   width: 100%;
   max-width: 850px;
-  overflow: hidden;
+  max-height: 95vh;
+  overflow-y: auto;
   background: var(--white);
 }
 
 .modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
   padding: 12px 15px;
   border-bottom: 1px solid var(--line);
+  background: var(--white);
 }
 
 .modal-title {
@@ -343,11 +357,35 @@ footer strong {
 }
 
 .close {
+  flex-shrink: 0;
   border: 0;
   background: none;
   color: var(--text);
   font-size: 24px;
   cursor: pointer;
+}
+
+.video-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  background: var(--white);
+}
+
+.video-choice {
+  padding: 9px 15px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--white);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.video-choice.active {
+  border-color: var(--accent);
+  background: var(--soft);
 }
 
 .player {
@@ -356,8 +394,8 @@ footer strong {
   background: #171513;
 }
 
-.player iframe,
-.player video {
+.player video,
+.player iframe {
   display: block;
   width: 100%;
   height: 100%;
@@ -366,11 +404,12 @@ footer strong {
 
 .modal-message {
   display: none;
-  padding: 25px 15px;
+  padding: 20px 15px;
   color: var(--muted);
   font-size: 12px;
   text-align: center;
   line-height: 1.8;
+  overflow-wrap: anywhere;
 }
 
 .modal-message.show {
@@ -378,7 +417,10 @@ footer strong {
 }
 
 .modal-message a {
+  display: inline-block;
+  margin-top: 8px;
   color: var(--accent);
+  text-decoration: underline;
 }
 
 @media (max-width: 520px) {
@@ -422,6 +464,14 @@ footer strong {
 
   .date {
     font-size: 9px;
+  }
+
+  .filter {
+    padding: 7px 12px;
+  }
+
+  .modal {
+    padding: 10px;
   }
 }
 
@@ -468,7 +518,7 @@ footer strong {
 
   <div class="list-info">
     <span>VIDEO COLLECTION</span>
-    <span id="count">共 0 个视频</span>
+    <span id="count">共 0 个收藏</span>
   </div>
 
   <main>
@@ -486,12 +536,11 @@ footer strong {
 
   <footer>
     <strong>JIMIN ARCHIVE</strong>
-    <div>本页面视频版权归属官方，仅作为旻吧回忆录配套网页观赏使用 </div>
+    <div>本页面视频版权归属官方，仅作为旻吧回忆录配套网页观赏使用</div>
     <div>网页权限仅限购买者本人私人观看，严禁二次传播</div>
   </footer>
 
 </div>
-
 
 <div class="modal" id="modal">
   <div class="modal-box">
@@ -501,6 +550,8 @@ footer strong {
       <button class="close" id="close" aria-label="关闭">×</button>
     </div>
 
+    <div class="video-selector" id="videoSelector" hidden></div>
+
     <div class="player" id="player"></div>
 
     <div class="modal-message" id="message"></div>
@@ -508,19 +559,23 @@ footer strong {
   </div>
 </div>
 
-
 <script>
 /*
-添加视频时，只需要编辑下面 VIDEO_LIST。
+添加视频说明：
 
-title：视频标题
-date：视频日期
-category：舞台、采访、幕后、日常、其他
-cover：封面图片地址，没有封面就留空
-video：YouTube 链接或 MP4 直链
-description：视频简介
+1. id：视频编号。
+2. title：卡片标题。
+3. date：视频日期。
+4. category：舞台、采访/综艺、幕后、日常、其他。
+5. cover：封面图片地址，没有封面就留空。
+6. videos：视频列表，可以给一张卡片添加多个视频。
+7. description：卡片简介。
 
-video 为空时，点击会提示尚未添加播放地址。
+视频文件放在仓库根目录时：
+./女团舞.mp4
+./邪恶版kiyo.mp4
+
+注意：文件名必须与 GitHub 仓库中的真实文件名完全一致。
 */
 
 const VIDEO_LIST = [
@@ -530,7 +585,6 @@ const VIDEO_LIST = [
     date: "140827",
     category: "采访/综艺",
     cover: "",
-   cover: "",
     videos: [
       {
         title: "女团舞",
@@ -541,15 +595,15 @@ const VIDEO_LIST = [
         url: "./邪恶版kiyo.mp4"
       }
     ],
-    description: "智旻的综艺瞬间。"
+    description: "智旻在节目中的精彩瞬间。"
   },
   {
     id: "002",
     title: "智旻的采访时刻",
     date: "待补充",
-    category: "采访",
+    category: "采访/综艺",
     cover: "",
-    video: "",
+    videos: [],
     description: "镜头前的真诚表达，也值得被好好记住。"
   },
   {
@@ -558,7 +612,7 @@ const VIDEO_LIST = [
     date: "待补充",
     category: "幕后",
     cover: "",
-    video: "",
+    videos: [],
     description: "收藏舞台之外，那些自然又可爱的瞬间。"
   }
 ];
@@ -566,10 +620,12 @@ const VIDEO_LIST = [
 const grid = document.getElementById("videoGrid");
 const count = document.getElementById("count");
 const empty = document.getElementById("empty");
+
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
 const player = document.getElementById("player");
 const message = document.getElementById("message");
+const videoSelector = document.getElementById("videoSelector");
 
 let currentCategory = "全部";
 
@@ -583,68 +639,104 @@ function escapeHTML(value) {
   })[char]);
 }
 
+function getVideoList(item) {
+  if (Array.isArray(item.videos)) {
+    return item.videos.filter(v => v && v.url);
+  }
+
+  if (item.video) {
+    return [{ title: item.title, url: item.video }];
+  }
+
+  return [];
+}
+
 function renderVideos() {
   const list = currentCategory === "全部"
     ? VIDEO_LIST
     : VIDEO_LIST.filter(v => v.category === currentCategory);
 
-  grid.innerHTML = list.map(v => `
-    <article class="video-card">
-      <button class="cover" data-id="${escapeHTML(v.id)}"
-        aria-label="播放 ${escapeHTML(v.title)}">
+  grid.innerHTML = list.map(v => {
+    const videos = getVideoList(v);
+    const videoLabel = videos.length
+      ? `含 ${videos.length} 个视频`
+      : "待添加视频";
 
-        ${v.cover
-          ? `<img src="${escapeHTML(v.cover)}"
-              alt="${escapeHTML(v.title)}"
-              loading="lazy"
-              onerror="this.style.display='none'">`
-          : `<div class="placeholder">
-              <div class="placeholder-symbol">J</div>
-              <div class="placeholder-text">JIMIN ARCHIVE</div>
-            </div>`
-        }
+    const coverHTML = v.cover
+      ? `<img src="${escapeHTML(v.cover)}"
+          alt="${escapeHTML(v.title)}"
+          loading="lazy"
+          onerror="this.style.display='none'">`
+      : `<div class="placeholder">
+          <div class="placeholder-symbol">J</div>
+          <div class="placeholder-text">JIMIN ARCHIVE</div>
+        </div>`;
 
-        <span class="play">▶</span>
-      </button>
+    return `
+      <article class="video-card">
+        <button
+          class="cover"
+          data-id="${escapeHTML(v.id)}"
+          aria-label="打开 ${escapeHTML(v.title)}">
 
-      <div class="video-info">
-        <div class="meta">
-          <span class="tag">${escapeHTML(v.category)}</span>
-          <span class="date">${escapeHTML(v.date)}</span>
+          ${coverHTML}
+
+          <span class="play">▶</span>
+        </button>
+
+        <div class="video-info">
+          <div class="meta">
+            <span class="tag">${escapeHTML(v.category)}</span>
+            <span class="date">${escapeHTML(v.date)}</span>
+          </div>
+
+          <h2 class="video-title">${escapeHTML(v.title)}</h2>
+
+          <p class="description">
+            ${escapeHTML(v.description || "")}
+          </p>
+
+          <div class="card-footer">
+            <span>${videoLabel}</span>
+            <span>↗</span>
+          </div>
         </div>
+      </article>
+    `;
+  }).join("");
 
-        <h2 class="video-title">${escapeHTML(v.title)}</h2>
-
-        <p class="description">${escapeHTML(v.description || "")}</p>
-
-        <div class="card-footer">
-          <span>${v.video ? "观看视频" : "待添加视频"}</span>
-          <span>↗</span>
-        </div>
-      </div>
-    </article>
-  `).join("");
-
-  count.textContent = `共 ${list.length} 个视频`;
+  count.textContent = `共 ${list.length} 个收藏`;
   empty.style.display = list.length ? "none" : "block";
   grid.style.display = list.length ? "grid" : "none";
 }
 
-document.querySelectorAll(".filter").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".filter").forEach(b =>
-      b.classList.remove("active")
-    );
+function showMessage(text, url = "") {
+  message.innerHTML = "";
+  message.classList.add("show");
 
-    button.classList.add("active");
-    currentCategory = button.dataset.category;
-    renderVideos();
-  });
-});
+  const paragraph = document.createElement("div");
+  paragraph.textContent = text;
+  message.appendChild(paragraph);
+
+  if (url) {
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "在新页面打开视频";
+    message.appendChild(link);
+  }
+}
+
+function clearPlayer() {
+  player.innerHTML = "";
+  message.innerHTML = "";
+  message.classList.remove("show");
+}
 
 function getYouTubeEmbed(url) {
   try {
-    const u = new URL(url);
+    const u = new URL(url, window.location.href);
     const host = u.hostname.replace(/^www\./, "");
     let id = "";
 
@@ -669,122 +761,156 @@ function getYouTubeEmbed(url) {
   }
 }
 
-function closeModal() {
-  modal.classList.remove("open");
-  player.innerHTML = "";
-  message.innerHTML = "";
-  message.classList.remove("show");
-  document.body.style.overflow = "";
-}
+function playSelectedVideo(item) {
+  clearPlayer();
 
-function openVideo(v) {
-  modalTitle.textContent = v.title;
-  player.innerHTML = "";
-  message.innerHTML = "";
-  message.classList.remove("show");
+  modalTitle.textContent = item.title || "视频播放";
 
-  modal.classList.add("open");
-  document.body.style.overflow = "hidden";
+  const url = String(item.url || "").trim();
 
-  // 兼容单视频和多视频
-  const videoList = v.videos || (
-    v.video ? [{ title: v.title, url: v.video }] : []
-  );
-
-  if (!videoList.length) {
-    message.textContent = "这段视频还没有添加播放地址。";
-    message.classList.add("show");
+  if (!url) {
+    showMessage("这个视频还没有添加播放地址。");
     return;
   }
 
-  // 如果有多个视频，先显示选择按钮
-  if (videoList.length > 1) {
-    const selector = document.createElement("div");
-    selector.style.cssText =
-      "display:flex;flex-wrap:wrap;gap:10px;padding:15px;background:#FFFEFA;";
+  const youtubeURL = getYouTubeEmbed(url);
 
-    videoList.forEach((item, index) => {
-      const button = document.createElement("button");
-      button.textContent = item.title;
-      button.style.cssText =
-        "padding:10px 16px;border:1px solid #DED9D1;" +
-        "border-radius:20px;background:#E8DFD3;color:#302D2A;" +
-        "font-size:13px;cursor:pointer;";
+  if (youtubeURL) {
+    const iframe = document.createElement("iframe");
+    iframe.src = youtubeURL;
+    iframe.title = item.title || "视频播放";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
 
-      button.addEventListener("click", () => {
-        playSelectedVideo(item.url);
-        modalTitle.textContent = item.title;
-      });
-
-      selector.appendChild(button);
-    });
-
-    player.appendChild(selector);
+    player.appendChild(iframe);
+    return;
   }
 
-  // 默认播放第一个视频
-  playSelectedVideo(videoList[0].url);
-}
-
-function playSelectedVideo(url) {
-  // 保留选择按钮，只替换实际播放器
-  const oldPlayer = player.querySelector(".video-screen");
-  if (oldPlayer) oldPlayer.remove();
-
-  const screen = document.createElement("div");
-  screen.className = "video-screen";
-  screen.style.cssText =
-    "width:100%;aspect-ratio:16/9;background:#171513;";
-
   const video = document.createElement("video");
-  video.src = url;
+
   video.controls = true;
   video.playsInline = true;
   video.preload = "metadata";
-  video.style.cssText = "display:block;width:100%;height:100%;";
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.style.width = "100%";
+  video.style.height = "100%";
+  video.style.display = "block";
+  video.style.background = "#171513";
+
+  // 让浏览器根据地址加载视频。
+  video.src = url;
 
   video.addEventListener("error", () => {
-    message.textContent = "视频加载失败，请检查视频文件地址和格式。";
-    message.classList.add("show");
-  });
+    showMessage(
+      "视频加载失败。请检查文件名、视频地址或视频编码格式。",
+      new URL(url, window.location.href).href
+    );
+  }, { once: true });
 
-  screen.appendChild(video);
-  player.appendChild(screen);
+  player.appendChild(video);
 
-  video.play().catch(() => {
-    // iPhone 可能要求用户手动点击播放按钮
-  });
+  // 尝试自动播放；若手机浏览器阻止，仍可手动点击播放。
+  const playPromise = video.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {});
+  }
 }
 
-  message.textContent = "这个地址暂时无法直接嵌入播放。请使用 YouTube 视频链接或可直接播放的 MP4 链接。";
+function openVideo(v) {
+  clearPlayer();
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  link.textContent = "前往视频原页面";
-  link.style.display = "block";
-  link.style.marginTop = "12px";
-  message.appendChild(link);
-  message.classList.add("show");
+  modalTitle.textContent = v.title;
+  modal.classList.add("open");
+  document.body.classList.add("modal-open");
+
+  const videos = getVideoList(v);
+
+  if (!videos.length) {
+    showMessage("这段视频还没有添加播放地址。");
+    return;
+  }
+
+  if (videos.length > 1) {
+    videoSelector.hidden = false;
+    videoSelector.innerHTML = "";
+
+    videos.forEach((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "video-choice";
+      button.textContent = item.title || `视频 ${index + 1}`;
+
+      button.addEventListener("click", () => {
+        videoSelector.querySelectorAll(".video-choice").forEach(b => {
+          b.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        playSelectedVideo(item);
+      });
+
+      videoSelector.appendChild(button);
+    });
+
+    // 默认选中并播放第一个视频。
+    const firstButton = videoSelector.querySelector(".video-choice");
+    if (firstButton) firstButton.classList.add("active");
+
+    playSelectedVideo(videos[0]);
+  } else {
+    videoSelector.hidden = true;
+    videoSelector.innerHTML = "";
+    playSelectedVideo(videos[0]);
+  }
 }
+
+function closeModal() {
+  modal.classList.remove("open");
+  document.body.classList.remove("modal-open");
+
+  clearPlayer();
+  videoSelector.innerHTML = "";
+  videoSelector.hidden = true;
+}
+
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach(b => {
+      b.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    currentCategory = button.dataset.category;
+    renderVideos();
+  });
+});
 
 grid.addEventListener("click", event => {
   const button = event.target.closest("[data-id]");
   if (!button) return;
 
-  const video = VIDEO_LIST.find(v => v.id === button.dataset.id);
-  if (video) openVideo(video);
+  const item = VIDEO_LIST.find(v => v.id === button.dataset.id);
+
+  if (item) {
+    openVideo(item);
+  }
 });
 
 document.getElementById("close").addEventListener("click", closeModal);
 
 modal.addEventListener("click", event => {
-  if (event.target === modal) closeModal();
+  if (event.target === modal) {
+    closeModal();
+  }
 });
 
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closeModal();
+  if (event.key === "Escape") {
+    closeModal();
+  }
 });
 
 renderVideos();
