@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>女团舞 | JIMIN ARCHIVE</title>
+  <title>After School Club | JIMIN ARCHIVE</title>
 
   <style>
     * {
@@ -40,6 +40,30 @@
       letter-spacing: 1px;
     }
 
+    .video-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .video-button {
+      padding: 10px 22px;
+      border: 1px solid #DED9D1;
+      border-radius: 24px;
+      background: #FFFEFA;
+      color: #89837B;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .video-button.active {
+      background: #E8DFD3;
+      border-color: #A58B73;
+      color: #302D2A;
+    }
+
     .video-box {
       width: 100%;
       overflow: hidden;
@@ -55,8 +79,14 @@
       background: #171513;
     }
 
+    .current-title {
+      margin-top: 16px;
+      font-size: 16px;
+      text-align: center;
+    }
+
     .message {
-      margin-top: 14px;
+      margin-top: 12px;
       color: #89837B;
       font-size: 12px;
       line-height: 1.8;
@@ -79,7 +109,6 @@
       font-size: 15px;
       text-decoration: none;
       text-align: center;
-      -webkit-tap-highlight-color: rgba(165, 139, 115, 0.2);
       cursor: pointer;
     }
 
@@ -91,12 +120,33 @@
 
 <body>
   <main class="container">
-    <h1>女团舞</h1>
+
+    <h1>After School Club</h1>
 
     <div class="subtitle">
       JIMIN ARCHIVE · VIDEO COLLECTION
     </div>
 
+    <!-- 两个视频的切换按钮 -->
+    <div class="video-selector">
+      <button
+        class="video-button active"
+        data-index="0"
+        type="button"
+      >
+        女团舞
+      </button>
+
+      <button
+        class="video-button"
+        data-index="1"
+        type="button"
+      >
+        邪恶版Kiyo
+      </button>
+    </div>
+
+    <!-- 视频播放器 -->
     <div class="video-box">
       <video
         id="video"
@@ -106,46 +156,91 @@
         preload="metadata"
       >
         <source
-          src="https://cudbcosn.github.io/jimin-archive-new/%E5%A5%B3%E5%9B%A2%E8%88%9E.mp4"
+          id="videoSource"
+          src="./女团舞.mp4"
           type="video/mp4"
         >
         当前浏览器不支持播放此视频。
       </video>
     </div>
 
-    <div class="message" id="message">
-      点击播放器中的播放按钮即可观看。
+    <div class="current-title" id="currentTitle">
+      女团舞
     </div>
 
+    <div class="message" id="message">
+      点击上方按钮切换视频，点击播放器中的播放按钮即可观看。
+    </div>
+
+    <!-- 返回视频收藏馆 -->
     <a
       class="back"
-      id="backButton"
       href=" "
     >
       ← 返回视频收藏馆
     </a >
+
   </main>
 
   <script>
+    const videos = [
+      {
+        title: "女团舞",
+        url: "./女团舞.mp4"
+      },
+      {
+        title: "邪恶版Kiyo",
+        url: "./邪恶版kiyo.mp4"
+      }
+    ];
+
     const video = document.getElementById("video");
+    const videoSource = document.getElementById("videoSource");
+    const currentTitle = document.getElementById("currentTitle");
     const message = document.getElementById("message");
-    const backButton = document.getElementById("backButton");
+    const buttons = document.querySelectorAll(".video-button");
 
-    video.addEventListener("error", function () {
-      message.textContent =
-        "视频加载失败，请检查视频文件地址。";
+    function switchVideo(index) {
+      const item = videos[index];
+
+      if (!item) return;
+
+      // 切换视频时停止当前播放
+      video.pause();
+
+      // 更换视频地址
+      videoSource.src = item.url;
+      video.load();
+
+      // 更新标题和提示文字
+      currentTitle.textContent = item.title;
+      message.textContent = "点击播放器中的播放按钮即可观看。";
+
+      // 更新按钮选中状态
+      buttons.forEach((button, buttonIndex) => {
+        button.classList.toggle(
+          "active",
+          buttonIndex === index
+        );
+      });
+    }
+
+    // 绑定视频切换按钮
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        switchVideo(Number(button.dataset.index));
+      });
     });
 
-    video.addEventListener("loadedmetadata", function () {
-      message.textContent =
-        "视频已加载，请点击播放按钮观看。";
+    // 视频加载成功
+    video.addEventListener("loadedmetadata", () => {
+      message.textContent = "视频已加载，请点击播放按钮观看。";
     });
 
-    backButton.addEventListener("click", function (event) {
-      event.preventDefault();
-
-      window.location.href =
-        "https://cudbcosn.github.io/jimin-archive-new/videos.html";
+    // 视频加载失败
+    video.addEventListener("error", () => {
+      message.textContent =
+        "视频加载失败，请联系旻吧。";
     });
   </script>
 </body>
