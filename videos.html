@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频收藏馆 | JIMIN ARCHIVE</title>
+
+<style>
+:root {
+  --bg: #F5F3EF;
+  --white: #FFFEFA;
+  --text: #302D2A;
+  --muted: #89837B;
+  --line: #DED9D1;
+  --accent: #A58B73;
+  --soft: #E8DFD3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page {
+  max-width: 850px;
+  margin: auto;
+  padding: 0 22px 40px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+nav a {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+nav a:hover {
+  color: var(--accent);
+}
+
+.hero {
+  padding: 48px 0 32px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  margin: 12px 0;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 3px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.divider {
+  width: 35px;
+  height: 1px;
+  margin: 22px auto 0;
+  background: var(--accent);
+}
+
+.filter-title {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.filter {
+  padding: 7px 16px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--white);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filter.active {
+  background: var(--soft);
+  border-color: var(--soft);
+  color: var(--text);
+}
+
+.list-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.video-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: 0 5px 20px rgba(70, 55, 40, 0.04);
+}
+
+.cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: linear-gradient(135deg, #F0ECE5, #E8DFD3);
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+}
+
+.cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  color: var(--accent);
+  text-align: center;
+}
+
+.placeholder-symbol {
+  font-family: Georgia, serif;
+  font-size: 36px;
+}
+
+.placeholder-text {
+  margin-top: 5px;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.play {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 254, 250, 0.92);
+  color: var(--accent);
+  transform: translate(-50%, -50%);
+}
+
+.video-info {
+  padding: 14px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  padding: 3px 8px;
+  background: #F0ECE5;
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.date {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.video-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.description {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 13px;
+  padding-top: 10px;
+  border-top: 1px solid #EEEAE4;
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.empty {
+  display: none;
+  padding: 35px 15px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+.note {
+  margin-top: 30px;
+  padding: 20px 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 254, 250, 0.65);
+  text-align: center;
+}
+
+.note-title {
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.note p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 2;
+}
+
+footer {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+  line-height: 2;
+  letter-spacing: 1px;
+}
+
+footer strong {
+  display: block;
+  color: var(--accent);
+  font-family: Georgia, serif;
+  font-size: 15px;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+.modal {
+  position: fixed;
+  z-index: 99;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(35, 31, 27, 0.86);
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 850px;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-title {
+  font-size: 13px;
+}
+
+.close {
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #171513;
+}
+
+.player iframe,
+.player video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.modal-message {
+  display: none;
+  padding: 25px 15px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.modal-message.show {
+  display: block;
+}
+
+.modal-message a {
+  color: var(--accent);
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  header {
+    align-items: flex-start;
+  }
+
+  nav {
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 10px;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  .video-grid {
+    gap: 12px;
+  }
+
+  .video-info {
+    padding: 10px;
+  }
+
+  .video-title {
+    font-size: 12px;
+  }
+
+  .description {
+    font-size: 10px;
+  }
+
+  .date {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 350px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <header>
+    <a class="brand" href="./index.html">JIMIN ARCHIVE</a>
+
+    <nav>
+      <a href="./index.html">首页</a>
+      <a href="./library.html">声音收藏馆</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">JIMIN · VIDEO ARCHIVE</div>
+    <h1>视频收藏馆</h1>
+    <div class="subtitle">收藏那些值得反复观看的瞬间</div>
+    <div class="divider"></div>
+  </section>
+
+  <section>
+    <div class="filter-title">按照喜欢的类型，寻找智旻的珍贵影像</div>
+
+    <div class="filters">
+      <button class="filter active" data-category="全部">全部</button>
+      <button class="filter" data-category="舞台">舞台</button>
+      <button class="filter" data-category="采访">采访</button>
+      <button class="filter" data-category="幕后">幕后</button>
+      <button class="filter" data-category="日常">日常</button>
+      <button class="filter" data-category="其他">其他</button>
+    </div>
+  </section>
+
+  <div class="list-info">
+    <span>VIDEO COLLECTION</span>
+    <span id="count">共 0 个视频</span>
+  </div>
+
+  <main>
+    <div class="video-grid" id="videoGrid"></div>
+    <div class="empty" id="empty">这个分类暂时还没有收藏的视频。</div>
+  </main>
+
+  <section class="note">
+    <div class="note-title">LITTLE MOMENTS, FOREVER</div>
+    <p>
+      每一段影像，都是值得收藏的回忆。<br>
+      慢慢收集，慢慢整理，把喜欢的瞬间留在这里。
+    </p>
+  </section>
+
+  <footer>
+    <strong>JIMIN ARCHIVE</strong>
+    <div>本页面视频版权归属官方，仅作为旻吧回忆录配套网页观赏使用 </div>
+    <div>网页权限仅限购买者本人私人观看，严禁二次传播</div>
+  </footer>
+
+</div>
+
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">视频播放</span>
+      <button class="close" id="close" aria-label="关闭">×</button>
+    </div>
+
+    <div class="player" id="player"></div>
+
+    <div class="modal-message" id="message"></div>
+
+  </div>
+</div>
+
+
+<script>
+/*
+添加视频时，只需要编辑下面 VIDEO_LIST。
+
+title：视频标题
+date：视频日期
+category：舞台、采访、幕后、日常、其他
+cover：封面图片地址，没有封面就留空
+video：YouTube 链接或 MP4 直链
+description：视频简介
+
+video 为空时，点击会提示尚未添加播放地址。
+*/
+
+const VIDEO_LIST = [
+  {
+    id: "001",
+    title: "智旻的珍贵瞬间 001",
+    date: "待补充",
+    category: "舞台",
+    cover: "",
+    video: "",
+    description: "把喜欢的舞台瞬间，认真收藏起来。"
+  },
+  {
+    id: "002",
+    title: "智旻的采访时刻",
+    date: "待补充",
+    category: "采访",
+    cover: "",
+    video: "",
+    description: "镜头前的真诚表达，也值得被好好记住。"
+  },
+  {
+    id: "003",
+    title: "镜头之外的智旻",
+    date: "待补充",
+    category: "幕后",
+    cover: "",
+    video: "",
+    description: "收藏舞台之外，那些自然又可爱的瞬间。"
+  }
+];
+
+const grid = document.getElementById("videoGrid");
+const count = document.getElementById("count");
+const empty = document.getElementById("empty");
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const player = document.getElementById("player");
+const message = document.getElementById("message");
+
+let currentCategory = "全部";
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function renderVideos() {
+  const list = currentCategory === "全部"
+    ? VIDEO_LIST
+    : VIDEO_LIST.filter(v => v.category === currentCategory);
+
+  grid.innerHTML = list.map(v => `
+    <article class="video-card">
+      <button class="cover" data-id="${escapeHTML(v.id)}"
+        aria-label="播放 ${escapeHTML(v.title)}">
+
+        ${v.cover
+          ? `<img src="${escapeHTML(v.cover)}"
+              alt="${escapeHTML(v.title)}"
+              loading="lazy"
+              onerror="this.style.display='none'">`
+          : `<div class="placeholder">
+              <div class="placeholder-symbol">J</div>
+              <div class="placeholder-text">JIMIN ARCHIVE</div>
+            </div>`
+        }
+
+        <span class="play">▶</span>
+      </button>
+
+      <div class="video-info">
+        <div class="meta">
+          <span class="tag">${escapeHTML(v.category)}</span>
+          <span class="date">${escapeHTML(v.date)}</span>
+        </div>
+
+        <h2 class="video-title">${escapeHTML(v.title)}</h2>
+
+        <p class="description">${escapeHTML(v.description || "")}</p>
+
+        <div class="card-footer">
+          <span>${v.video ? "观看视频" : "待添加视频"}</span>
+          <span>↗</span>
+        </div>
+      </div>
+    </article>
+  `).join("");
+
+  count.textContent = `共 ${list.length} 个视频`;
+  empty.style.display = list.length ? "none" : "block";
+  grid.style.display = list.length ? "grid" : "none";
+}
+
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach(b =>
+      b.classList.remove("active")
+    );
+
+    button.classList.add("active");
+    currentCategory = button.dataset.category;
+    renderVideos();
+  });
+});
+
+function getYouTubeEmbed(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    let id = "";
+
+    if (host === "youtu.be") {
+      id = u.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (
+      ["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)
+    ) {
+      if (u.pathname === "/watch") {
+        id = u.searchParams.get("v") || "";
+      } else {
+        const match = u.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/);
+        if (match) id = match[1];
+      }
+    }
+
+    return id
+      ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1`
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+  player.innerHTML = "";
+  message.innerHTML = "";
+  message.classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+function openVideo(v) {
+  modalTitle.textContent = v.title;
+  player.innerHTML = "";
+  message.innerHTML = "";
+  message.classList.remove("show");
+
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  const url = (v.video || "").trim();
+
+  if (!url) {
+    message.textContent = "这段视频还没有添加播放地址。请在代码中的 VIDEO_LIST 里填写 video。";
+    message.classList.add("show");
+    return;
+  }
+
+  const embedURL = getYouTubeEmbed(url);
+
+  if (embedURL) {
+    const iframe = document.createElement("iframe");
+    iframe.src = embedURL;
+    iframe.title = v.title;
+    iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+    iframe.allowFullscreen = true;
+    player.appendChild(iframe);
+    return;
+  }
+
+  if (/^https?:\/\/.+\.(mp4|webm|ogv)(?:[?#].*)?$/i.test(url)) {
+    const video = document.createElement("video");
+    video.src = url;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+
+    video.addEventListener("error", () => {
+      player.innerHTML = "";
+      message.textContent = "视频无法播放，请检查视频直链是否有效。";
+      message.classList.add("show");
+    });
+
+    player.appendChild(video);
+    video.play().catch(() => {});
+    return;
+  }
+
+  message.textContent = "这个地址暂时无法直接嵌入播放。请使用 YouTube 视频链接或可直接播放的 MP4 链接。";
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "前往视频原页面";
+  link.style.display = "block";
+  link.style.marginTop = "12px";
+  message.appendChild(link);
+  message.classList.add("show");
+}
+
+grid.addEventListener("click", event => {
+  const button = event.target.closest("[data-id]");
+  if (!button) return;
+
+  const video = VIDEO_LIST.find(v => v.id === button.dataset.id);
+  if (video) openVideo(video);
+});
+
+document.getElementById("close").addEventListener("click", closeModal);
+
+modal.addEventListener("click", event => {
+  if (event.target === modal) closeModal();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeModal();
+});
+
+renderVideos();
+</script>
+
+</body>
+</html>
