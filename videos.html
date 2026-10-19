@@ -459,7 +459,7 @@ footer strong {
     <div class="filters">
       <button class="filter active" data-category="全部">全部</button>
       <button class="filter" data-category="舞台">舞台</button>
-      <button class="filter" data-category="采访">采访</button>
+      <button class="filter" data-category="采访/综艺">采访/综艺</button>
       <button class="filter" data-category="幕后">幕后</button>
       <button class="filter" data-category="日常">日常</button>
       <button class="filter" data-category="其他">其他</button>
@@ -526,12 +526,22 @@ video 为空时，点击会提示尚未添加播放地址。
 const VIDEO_LIST = [
   {
     id: "001",
-    title: "智旻的珍贵瞬间 001",
-    date: "待补充",
-    category: "舞台",
+    title: "After School Club",
+    date: "140827",
+    category: "采访/综艺",
     cover: "",
-    video: "",
-    description: "把喜欢的舞台瞬间，认真收藏起来。"
+   cover: "",
+    videos: [
+      {
+        title: "女团舞",
+        url: "./女团舞.mp4"
+      },
+      {
+        title: "邪恶版kiyo",
+        url: "./邪恶版kiyo.mp4"
+      }
+    ],
+    description: "智旻的综艺瞬间。"
   },
   {
     id: "002",
