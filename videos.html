@@ -814,9 +814,12 @@ function playSelectedVideo(item) {
   // 尝试自动播放；若手机浏览器阻止，仍可手动点击播放。
   const playPromise = video.play();
 
-  if (playPromise && typeof playPromise.catch === "function") {
-    playPromise.catch(() => {});
-  }
+if (playPromise && typeof playPromise.catch === "function") {
+  playPromise.catch(() => {
+    // iPhone 可能会阻止自动播放，保留播放器供用户手动操作。
+    message.classList.remove("show");
+  });
+}
 }
 
 function openVideo(v) {
