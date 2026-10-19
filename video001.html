@@ -66,16 +66,21 @@
 
     .back {
       display: block;
-      width: fit-content;
-      margin: 24px auto 0;
-      padding: 12px 22px;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 280px;
+      margin: 28px auto 0;
+      padding: 16px 22px;
       border: 1px solid #DED9D1;
-      border-radius: 24px;
+      border-radius: 28px;
       background: #FFFEFA;
       color: #A58B73;
-      font-size: 13px;
+      font-size: 15px;
       text-decoration: none;
       text-align: center;
+      -webkit-tap-highlight-color: rgba(165, 139, 115, 0.2);
+      cursor: pointer;
     }
 
     .back:active {
@@ -104,17 +109,17 @@
           src="https://cudbcosn.github.io/jimin-archive-new/%E5%A5%B3%E5%9B%A2%E8%88%9E.mp4"
           type="video/mp4"
         >
-
         当前浏览器不支持播放此视频。
       </video>
     </div>
 
     <div class="message" id="message">
-      如果视频没有自动播放，请点击播放器中的播放按钮。
+      点击播放器中的播放按钮即可观看。
     </div>
 
     <a
       class="back"
+      id="backButton"
       href=" "
     >
       ← 返回视频收藏馆
@@ -124,15 +129,23 @@
   <script>
     const video = document.getElementById("video");
     const message = document.getElementById("message");
+    const backButton = document.getElementById("backButton");
 
     video.addEventListener("error", function () {
       message.textContent =
-        "视频加载失败。请检查文件地址或视频编码格式。";
+        "视频加载失败，请检查视频文件地址。";
     });
 
     video.addEventListener("loadedmetadata", function () {
       message.textContent =
         "视频已加载，请点击播放按钮观看。";
+    });
+
+    backButton.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      window.location.href =
+        "https://cudbcosn.github.io/jimin-archive-new/videos.html";
     });
   </script>
 </body>
