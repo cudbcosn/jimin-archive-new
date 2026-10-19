@@ -1,12 +1,318 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JIMIN ARCHIVE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#EFF6FC">
+<title>JIMIN ARCHIVE | 朴智旻个人收藏馆</title>
+
+<style>
+:root {
+  --bg: #EFF6FC;
+  --white: #FFFFFF;
+  --blue: #B9D8F0;
+  --yellow: #F7E7A8;
+  --text: #40566B;
+  --muted: #8799A8;
+  --line: #DCE7F0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", "PingFang SC", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 24px 40px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.hero {
+  text-align: center;
+  padding: 85px 10px 65px;
+}
+
+.star {
+  display: inline-block;
+  color: #B69A48;
+  background: var(--yellow);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  font-size: 21px;
+  margin-bottom: 25px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 8vw, 76px);
+  font-weight: 400;
+  letter-spacing: -2px;
+  line-height: 1.08;
+}
+
+.subtitle {
+  margin-top: 20px;
+  font-size: 14px;
+  letter-spacing: 4px;
+}
+
+.description {
+  margin: 25px auto 0;
+  max-width: 420px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 2.2;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.section-title h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 25px;
+  font-weight: 400;
+  margin: 0 0 9px;
+}
+
+.section-title p {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 30px 25px 27px;
+  min-height: 245px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(80, 110, 135, .08);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--blue);
+  font-size: 22px;
+  margin-bottom: 26px;
+}
+
+.card:nth-child(2) .card-icon {
+  background: var(--yellow);
+}
+
+.card-number {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 25px;
+  margin: 10px 0;
+}
+
+.card-cn {
+  font-size: 13px;
+  margin-bottom: 13px;
+}
+
+.card-desc {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  min-height: 44px;
+}
+
+.card-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--blue);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.card:nth-child(2) .card-link {
+  border-color: #E5D28C;
+}
+
+.quote {
+  text-align: center;
+  padding: 65px 10px 45px;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 2;
+}
+
+.quote span {
+  display: block;
+  margin-top: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  line-height: 2;
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding: 22px 17px 30px;
+  }
+
+  .hero {
+    padding: 65px 5px 48px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .card {
+    min-height: 0;
+    padding: 25px 22px;
+  }
+
+  .card-desc {
+    min-height: 0;
+  }
+
+  .quote {
+    padding: 48px 5px 35px;
+  }
+}
+</style>
 </head>
+
 <body>
-  <h1>JIMIN ARCHIVE</h1>
-  <p>网页恢复测试成功！</p >
+<main class="page">
+
+  <header class="topbar">
+    <span>JIMIN ARCHIVE</span>
+    <span>PERSONAL COLLECTION</span>
+  </header>
+
+  <section class="hero">
+    <div class="star">✦</div>
+
+    <div class="eyebrow">PARK JIMIN · 朴智旻</div>
+
+    <h1>JIMIN<br>ARCHIVE</h1>
+
+    <div class="subtitle">朴智旻个人收藏馆</div>
+
+    <p class="description">
+      把想要记住的瞬间，留在声音与影像里。<br>
+      关于智旻的一切，慢慢收藏，慢慢回看。
+    </p>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Explore the Archive</h2>
+      <p>选择你想进入的收藏空间</p>
+    </div>
+
+    <div class="cards">
+
+      <a class="card" href="./library.html">
+        <div class="card-icon">♫</div>
+        <div class="card-number">01 / AUDIO</div>
+        <h3>Audio Archive</h3>
+        <div class="card-cn">声音收藏馆</div>
+        <div class="card-desc">
+          收藏声音、语音与那些值得反复聆听的瞬间。
+        </div>
+        <div class="card-link">进入声音收藏馆 ↗</div>
+      </a>
+
+      <a class="card" href="./videos.html">
+        <div class="card-icon">▶</div>
+        <div class="card-number">02 / VIDEO</div>
+        <h3>Video Archive</h3>
+        <div class="card-cn">视频收藏馆</div>
+        <div class="card-desc">
+          收藏舞台、采访、幕后与镜头里的珍贵时刻。
+        </div>
+        <div class="card-link">进入视频收藏馆 ↗</div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="quote">
+    Every moment is worth remembering.
+    <span>FOR JIMIN, WITH LOVE.</span>
+  </section>
+
+  <footer class="footer">
+    JIMIN ARCHIVE · EST. 2026<br>
+    A PERSONAL COLLECTION MADE WITH LOVE
+  </footer>
+
+</main>
 </body>
 </html>
