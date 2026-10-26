@@ -1,315 +1,247 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>007 爱豆app个人技展示 | JIMIN ARCHIVE</title>
+  <title>爱豆app | JIMIN ARCHIVE</title>
 
-<style>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-:root {
-  --bg: #F5F3EF;
-  --white: #FFFEFA;
-  --text: #302D2A;
-  --muted: #89837B;
-  --line: #DED9D1;
-  --accent: #A58B73;
-  --soft: #E8DFD3;
-}
+    body {
+      margin: 0;
+      padding: 24px 16px 40px;
+      background: #F5F3EF;
+      color: #302D2A;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "PingFang SC", sans-serif;
+    }
 
-* {
-  box-sizing: border-box;
-}
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "PingFang SC", sans-serif;
-}
+    h1 {
+      margin: 12px 0;
+      font-size: 24px;
+      font-weight: 500;
+      text-align: center;
+    }
 
-.container {
-  max-width: 850px;
-  margin: auto;
-  padding: 0 20px 40px;
-}
+    .subtitle {
+      margin-bottom: 24px;
+      color: #89837B;
+      font-size: 12px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--line);
-}
+    .video-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
 
-.brand {
-  color: var(--text);
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-decoration: none;
-}
+    .video-button {
+      padding: 10px 22px;
+      border: 1px solid #DED9D1;
+      border-radius: 24px;
+      background: #FFFEFA;
+      color: #89837B;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-nav a {
-  color: var(--muted);
-  font-size: 12px;
-  text-decoration: none;
-}
+    .video-button.active {
+      background: #E8DFD3;
+      border-color: #A58B73;
+      color: #302D2A;
+    }
 
-.hero {
-  padding: 45px 0 30px;
-  text-align: center;
-}
+    .video-box {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #171513;
+    }
 
-.eyebrow {
-  color: var(--accent);
-  font-size: 10px;
-  letter-spacing: 3px;
-}
+    video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      background: #171513;
+    }
 
-h1 {
-  margin: 15px 0;
-  font-size: 27px;
-  font-weight: 500;
-  letter-spacing: 2px;
-}
+    .current-title {
+      margin-top: 16px;
+      font-size: 16px;
+      text-align: center;
+    }
 
-.subtitle {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.8;
-}
+    .message {
+      margin-top: 12px;
+      color: #89837B;
+      font-size: 12px;
+      line-height: 1.8;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
 
-.divider {
-  width: 35px;
-  height: 1px;
-  margin: 22px auto;
-  background: var(--accent);
-}
+    .back {
+      display: block;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 280px;
+      margin: 28px auto 0;
+      padding: 16px 22px;
+      border: 1px solid #DED9D1;
+      border-radius: 28px;
+      background: #FFFEFA;
+      color: #A58B73;
+      font-size: 15px;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+    }
 
-.video-box {
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  background: #171513;
-}
-
-video {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 75vh;
-  background: #171513;
-}
-
-.video-info {
-  margin-top: 20px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  background: var(--white);
-}
-
-.video-date {
-  color: var(--accent);
-  font-size: 10px;
-  letter-spacing: 2px;
-}
-
-.video-description {
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 2;
-}
-
-.message {
-  margin-top: 15px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.8;
-  text-align: center;
-}
-
-.back {
-  display: block;
-  max-width: 280px;
-  margin: 28px auto 0;
-  padding: 14px 20px;
-  border: 1px solid var(--line);
-  border-radius: 30px;
-  background: var(--white);
-  color: var(--accent);
-  font-size: 13px;
-  text-align: center;
-  text-decoration: none;
-}
-
-.back:hover {
-  background: var(--soft);
-}
-
-footer {
-  margin-top: 35px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 2;
-  text-align: center;
-}
-
-footer strong {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--accent);
-  font-family: Georgia, serif;
-  font-size: 15px;
-  font-weight: normal;
-  letter-spacing: 2px;
-}
-
-@media (max-width: 520px) {
-
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-
-  h1 {
-    font-size: 23px;
-  }
-
-}
-
-</style>
+    .back:active {
+      background: #E8DFD3;
+    }
+  </style>
 </head>
 
 <body>
+  <main class="container">
 
-<div class="container">
-
-  <header>
-
-    <a class="brand" href="./index.html">
-      JIMIN ARCHIVE
-    </a>
-
-    <nav>
-      <a href="./videos.html">
-        视频收藏馆
-      </a>
-    </nav>
-
-  </header>
-
-  <section class="hero">
-
-    <div class="eyebrow">
-      JIMIN · VIDEO ARCHIVE
-    </div>
-
-    <h1>
-      爱豆app个人技展示
-    </h1>
+    <h1>爱豆app</h1>
 
     <div class="subtitle">
-      007 · VIDEO COLLECTION
+      JIMIN ARCHIVE · VIDEO COLLECTION
     </div>
 
-    <div class="divider"></div>
-
-  </section>
-
-  <!-- 视频播放器 -->
-
-  <div class="video-box">
-
-    <video
-      id="video"
-      controls
-      playsinline
-      webkit-playsinline
-      preload="metadata"
-    >
-
-      <source
-        src="./2015羊年祝福.mp4"
-        type="video/mp4"
+    <!-- 两个视频的切换按钮 -->
+    <div class="video-selector">
+      <button
+        class="video-button active"
+        data-index="0"
+        type="button"
       >
+        个人技展示
+      </button>
 
-      当前浏览器不支持播放此视频。
-
-    </video>
-
-  </div>
-
-  <!-- 视频介绍 -->
-
-  <section class="video-info">
-
-    <div class="video-date">
-      2015 · VIDEO 007
+      <button
+        class="video-button"
+        data-index="1"
+        type="button"
+      >
+        智旻的起床铃声
+      </button>
     </div>
 
-    <div class="video-description">
-      收藏那些值得反复观看的瞬间。<br>
-      慢慢收集，慢慢整理，把喜欢的回忆留在这里。
+    <!-- 视频播放器 -->
+    <div class="video-box">
+      <video
+        id="video"
+        controls
+        playsinline
+        webkit-playsinline
+        preload="metadata"
+      >
+        <source
+          id="videoSource"
+          src="./爱豆app个人技展示.mp4"
+          type="video/mp4"
+        >
+        当前浏览器不支持播放此视频。
+      </video>
     </div>
 
-  </section>
-
-  <div class="message" id="message">
-    点击播放器中的播放按钮即可观看。
-  </div>
-
-  <!-- 返回视频收藏馆 -->
-
-  <a
-    class="back"
-    href="./videos.html"
-  >
-    ← 返回视频收藏馆
-  </a>
-
-  <footer>
-
-    <strong>JIMIN ARCHIVE</strong>
-
-    <div>
-      VIDEO COLLECTION · 007
+    <div class="current-title" id="currentTitle">
+      个人技展示
     </div>
 
-    <div>
-      收藏那些值得反复观看的瞬间
+    <div class="message" id="message">
+      点击上方按钮切换视频，点击播放器中的播放按钮即可观看。
     </div>
 
-  </footer>
+    <!-- 返回视频收藏馆 -->
+    <a
+      class="back"
+      href=" "
+    >
+      ← 返回视频收藏馆
+    </a >
 
-</div>
+  </main>
 
-<script>
+  <script>
+    const videos = [
+      {
+        title: "个人技展示",
+        url: "./爱豆app个人技展示.mp4"
+      },
+      {
+        title: "智旻的起床铃声",
+        url: "./智旻的起床铃声.mp4"
+      }
+    ];
 
-const video = document.getElementById("video");
-const message = document.getElementById("message");
+    const video = document.getElementById("video");
+    const videoSource = document.getElementById("videoSource");
+    const currentTitle = document.getElementById("currentTitle");
+    const message = document.getElementById("message");
+    const buttons = document.querySelectorAll(".video-button");
 
-video.addEventListener("loadedmetadata", function() {
+    function switchVideo(index) {
+      const item = videos[index];
 
-  message.textContent = "视频已加载，点击播放即可观看。";
+      if (!item) return;
 
-});
+      // 切换视频时停止当前播放
+      video.pause();
 
-video.addEventListener("error", function() {
+      // 更换视频地址
+      videoSource.src = item.url;
+      video.load();
 
-  message.textContent =
-    "视频加载失败，请检查视频文件名和地址。";
+      // 更新标题和提示文字
+      currentTitle.textContent = item.title;
+      message.textContent = "点击播放器中的播放按钮即可观看。";
 
-});
+      // 更新按钮选中状态
+      buttons.forEach((button, buttonIndex) => {
+        button.classList.toggle(
+          "active",
+          buttonIndex === index
+        );
+      });
+    }
 
-</script>
+    // 绑定视频切换按钮
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        switchVideo(Number(button.dataset.index));
+      });
+    });
 
+    // 视频加载成功
+    video.addEventListener("loadedmetadata", () => {
+      message.textContent = "视频已加载，请点击播放按钮观看。";
+    });
+
+    // 视频加载失败
+    video.addEventListener("error", () => {
+      message.textContent =
+        "视频加载失败，请联系旻吧。";
+    });
+  </script>
 </body>
 </html>
