@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>mcd初一位 | JIMIN ARCHIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px 40px;
+      background: #F5F3EF;
+      color: #302D2A;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "PingFang SC", sans-serif;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 12px 0;
+      font-size: 24px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .subtitle {
+      margin-bottom: 24px;
+      color: #89837B;
+      font-size: 12px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .video-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .video-button {
+      padding: 10px 22px;
+      border: 1px solid #DED9D1;
+      border-radius: 24px;
+      background: #FFFEFA;
+      color: #89837B;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .video-button.active {
+      background: #E8DFD3;
+      border-color: #A58B73;
+      color: #302D2A;
+    }
+
+    .video-box {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #171513;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      background: #171513;
+    }
+
+    .current-title {
+      margin-top: 16px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .message {
+      margin-top: 12px;
+      color: #89837B;
+      font-size: 12px;
+      line-height: 1.8;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .back {
+      display: block;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 280px;
+      margin: 28px auto 0;
+      padding: 16px 22px;
+      border: 1px solid #DED9D1;
+      border-radius: 28px;
+      background: #FFFEFA;
+      color: #A58B73;
+      font-size: 15px;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .back:active {
+      background: #E8DFD3;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <h1>After School Club</h1>
+
+    <div class="subtitle">
+      JIMIN ARCHIVE · VIDEO COLLECTION
+    </div>
+
+    <!-- 两个视频的切换按钮 -->
+    <div class="video-selector">
+      <button
+        class="video-button active"
+        data-index="0"
+        type="button"
+      >
+        智旻不是哭包
+      </button>
+
+      <button
+        class="video-button"
+        data-index="1"
+        type="button"
+      >
+        要更加努力的智旻
+      </button>
+    </div>
+
+    <!-- 视频播放器 -->
+    <div class="video-box">
+      <video
+        id="video"
+        controls
+        playsinline
+        webkit-playsinline
+        preload="metadata"
+      >
+        <source
+          id="videoSource"
+          src="./智旻不是哭包.mp4"
+          type="video/mp4"
+        >
+        当前浏览器不支持播放此视频。
+      </video>
+    </div>
+
+    <div class="current-title" id="currentTitle">
+      智旻不是哭包
+    </div>
+
+    <div class="message" id="message">
+      点击上方按钮切换视频，点击播放器中的播放按钮即可观看。
+    </div>
+
+    <!-- 返回视频收藏馆 -->
+    <a
+      class="back"
+      href=" "
+    >
+      ← 返回视频收藏馆
+    </a >
+
+  </main>
+
+  <script>
+    const videos = [
+      {
+        title: "智旻不是哭包",
+        url: "./智旻不是哭包.mp4"
+      },
+      {
+        title: "要更加努力的智旻",
+        url: "./要更加努力的智旻.mp4"
+      }
+    ];
+
+    const video = document.getElementById("video");
+    const videoSource = document.getElementById("videoSource");
+    const currentTitle = document.getElementById("currentTitle");
+    const message = document.getElementById("message");
+    const buttons = document.querySelectorAll(".video-button");
+
+    function switchVideo(index) {
+      const item = videos[index];
+
+      if (!item) return;
+
+      // 切换视频时停止当前播放
+      video.pause();
+
+      // 更换视频地址
+      videoSource.src = item.url;
+      video.load();
+
+      // 更新标题和提示文字
+      currentTitle.textContent = item.title;
+      message.textContent = "点击播放器中的播放按钮即可观看。";
+
+      // 更新按钮选中状态
+      buttons.forEach((button, buttonIndex) => {
+        button.classList.toggle(
+          "active",
+          buttonIndex === index
+        );
+      });
+    }
+
+    // 绑定视频切换按钮
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        switchVideo(Number(button.dataset.index));
+      });
+    });
+
+    // 视频加载成功
+    video.addEventListener("loadedmetadata", () => {
+      message.textContent = "视频已加载，请点击播放按钮观看。";
+    });
+
+    // 视频加载失败
+    video.addEventListener("error", () => {
+      message.textContent =
+        "视频加载失败，请联系旻吧。";
+    });
+  </script>
+</body>
+</html>
